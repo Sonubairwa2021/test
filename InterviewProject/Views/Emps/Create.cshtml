@@ -1,0 +1,173 @@
+﻿@model InterviewProject.Controllers.MyEmp
+
+@{
+    ViewBag.Title = "Create";
+}
+
+
+<div id="create">
+    @using (Ajax.BeginForm("Create", new AjaxOptions { UpdateTargetId = "empLists", OnSuccess = "suc", OnFailure = "fail(data)", AllowCache = true, HttpMethod = "post", OnComplete = "suc(data)" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <hr />
+
+
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(Model => Model.firstname, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(Model => Model.firstname, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(Model => Model.firstname, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => Model.lastname, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => Model.lastname, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(Model => Model.lastname, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => Model.DOB, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => Model.DOB, new { @class = "form-control", @type = "datetime" })
+                    @Html.ValidationMessageFor(Model => Model.DOB, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => Model.email, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => Model.email, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(Model => Model.email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => Model.contact, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => Model.contact, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(Model => Model.contact, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => Model.country, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(Model => Model.country, new SelectList(ViewBag.countries, "id", "country"), "Select Country", new { @Class = "form-control" })
+                    @Html.ValidationMessageFor(Model => Model.country, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            @*<div class="form-group">
+                    @Html.LabelFor(model => Model.stateid, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(Model => Model.stateid, new SelectList(ViewBag.states, "id", "state"), "Select State", new { htmlAttributes = new { @Class = "form-control" } })
+                        @Html.ValidationMessageFor(Model => Model.stateid, "", new { @class = "text-danger" })
+                    </div>
+                </div>*@
+            @{
+                // Html.RenderPartial("States");
+            }
+
+            @if (ViewBag.cities != null)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => Model.city, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(Model => Model.city, new SelectList(ViewBag.cities, "id", "city"), "Select Country", new { @Class = "form-control" })
+                        @Html.ValidationMessageFor(Model => Model.city, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
+            <div id="states">
+
+            </div>
+            <div id="cities">
+
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div id="empLists" class="d-none">
+
+</div>
+
+@section Scripts {
+
+    <script src="~/Scripts/jquery-1.8.2.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+
+    <script type="text/javascript">
+
+        function suc(data) {
+            if (data != "") {
+                $("#create").addClass("d-none");
+
+                $("#country").change(function () {
+                    $.ajax({
+                        url: "/Emps/States",
+                        //  data: { 'country': $(this).val(), '__RequestVerificationToken': token },
+                        data: { 'country': $(this).val() },
+                        cache: false,
+                        type: "get",
+                        dataType: "html",
+                        success: function (data, textStatus, XMLHttpRequest) {
+                            $("#states").html(data); // HTML DOM replace
+                        }
+                    });
+                });
+                $("#empLists").removeClass("d-none");
+
+            }
+        }
+
+        function fail(data) {
+            alert(data);
+        }
+
+        $(document).ready(function (event) {
+
+            //$(document).load("/Emps/States?country=" + $(this).val());
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            $("#country").change(function () {
+                $.ajax({
+                    url: "/Emps/States",
+                    //  data: { 'country': $(this).val(), '__RequestVerificationToken': token },
+                    data: { 'country': $(this).val() },
+                    cache: false,
+                    type: "get",
+                    dataType: "html",
+                    success: function (data, textStatus, XMLHttpRequest) {
+                        $("#states").html(data); // HTML DOM replace
+                    }
+                });
+            });
+
+            $(document).on('change', "#state", function () {
+                $.ajax({
+                    url: "/Emps/Cities",
+                    data: { 'state': $(this).val() },
+                    cache: false,
+                    type: "get",
+                    dataType: "html",
+                    success: function (data, textStatus, XMLHttpRequest) {
+                        $("#cities").html(data); // HTML DOM replace
+                    }
+                });
+            });
+        });
+    </script>
+    @Scripts.Render("~/bundles/jqueryval")
+}

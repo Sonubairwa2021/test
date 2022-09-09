@@ -1,0 +1,14 @@
+﻿@model IEnumerable<InterviewProject.Controllers.cities>
+
+
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+<div class="form-group">
+    @Html.Label("city", htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.DropDownList("city", new SelectList(Model, "id", "city"), "Select city", new { @Class = "form-control" } )
+        @Html.ValidationMessage("city", "", new { @class = "text-danger" })
+    </div>
+</div>
+
+

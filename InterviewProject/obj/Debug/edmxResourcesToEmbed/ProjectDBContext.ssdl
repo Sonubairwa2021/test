@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="InterviewProjectDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="cities">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="sid" Type="int" Nullable="false" />
+    <Property Name="city" Type="nchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="contact">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="email" Type="nvarchar" MaxLength="50" />
+    <Property Name="phone" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="countries">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="country" Type="nvarchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Emp">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="firstname" Type="nvarchar" MaxLength="50" />
+    <Property Name="lastname" Type="nvarchar" MaxLength="50" />
+    <Property Name="DOB" Type="datetime" />
+    <Property Name="contactid" Type="int" Nullable="false" />
+    <Property Name="countryid" Type="int" Nullable="false" />
+    <Property Name="stateid" Type="int" Nullable="false" />
+    <Property Name="cityid" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="states">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="cid" Type="int" Nullable="false" />
+    <Property Name="state" Type="nvarchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_cities_states">
+    <End Role="states" Type="Self.states" Multiplicity="1" />
+    <End Role="cities" Type="Self.cities" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="states">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="cities">
+        <PropertyRef Name="sid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Emp_cities">
+    <End Role="cities" Type="Self.cities" Multiplicity="1" />
+    <End Role="Emp" Type="Self.Emp" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="cities">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Emp">
+        <PropertyRef Name="cityid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Emp_contact">
+    <End Role="contact" Type="Self.contact" Multiplicity="1" />
+    <End Role="Emp" Type="Self.Emp" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="contact">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Emp">
+        <PropertyRef Name="contactid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Emp_countries">
+    <End Role="countries" Type="Self.countries" Multiplicity="1" />
+    <End Role="Emp" Type="Self.Emp" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="countries">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Emp">
+        <PropertyRef Name="countryid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Emp_states">
+    <End Role="states" Type="Self.states" Multiplicity="1" />
+    <End Role="Emp" Type="Self.Emp" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="states">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Emp">
+        <PropertyRef Name="stateid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_states_countries">
+    <End Role="countries" Type="Self.countries" Multiplicity="1" />
+    <End Role="states" Type="Self.states" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="countries">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="states">
+        <PropertyRef Name="cid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="InterviewProjectDBModelStoreContainer">
+    <EntitySet Name="cities" EntityType="Self.cities" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="contact" EntityType="Self.contact" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="countries" EntityType="Self.countries" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Emp" EntityType="Self.Emp" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="states" EntityType="Self.states" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_cities_states" Association="Self.FK_cities_states">
+      <End Role="states" EntitySet="states" />
+      <End Role="cities" EntitySet="cities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Emp_cities" Association="Self.FK_Emp_cities">
+      <End Role="cities" EntitySet="cities" />
+      <End Role="Emp" EntitySet="Emp" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Emp_contact" Association="Self.FK_Emp_contact">
+      <End Role="contact" EntitySet="contact" />
+      <End Role="Emp" EntitySet="Emp" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Emp_countries" Association="Self.FK_Emp_countries">
+      <End Role="countries" EntitySet="countries" />
+      <End Role="Emp" EntitySet="Emp" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Emp_states" Association="Self.FK_Emp_states">
+      <End Role="states" EntitySet="states" />
+      <End Role="Emp" EntitySet="Emp" />
+    </AssociationSet>
+    <AssociationSet Name="FK_states_countries" Association="Self.FK_states_countries">
+      <End Role="countries" EntitySet="countries" />
+      <End Role="states" EntitySet="states" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

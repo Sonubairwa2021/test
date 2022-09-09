@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="InterviewProjectDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="contact">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="country">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="country1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="states" Relationship="Self.FK_states_countries" FromRole="countries" ToRole="states" />
+  </EntityType>
+  <EntityType Name="Emp">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="firstname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="lastname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="DOB" Type="DateTime" Precision="3" />
+    <Property Name="contactid" Type="Int32" Nullable="false" />
+    <Property Name="countryid" Type="Int32" Nullable="false" />
+    <Property Name="stateid" Type="Int32" Nullable="false" />
+    <Property Name="cityid" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="state">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="cid" Type="Int32" Nullable="false" />
+    <Property Name="state1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="country" Relationship="Self.FK_states_countries" FromRole="states" ToRole="countries" />
+    <NavigationProperty Name="cities" Relationship="Self.FK_cities_states" FromRole="states" ToRole="cities" />
+  </EntityType>
+  <EntityType Name="city">
+    <Key>
+      <PropertyRef Name="empid" />
+      <PropertyRef Name="sid" />
+    </Key>
+    <Property Name="empid" Type="Int32" Nullable="false" />
+    <Property Name="sid" Type="Int32" Nullable="false" />
+    <Property Name="city1" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="state" Relationship="Self.FK_cities_states" FromRole="cities" ToRole="states" />
+  </EntityType>
+  <Association Name="FK_states_countries">
+    <End Role="countries" Type="Self.country" Multiplicity="1" />
+    <End Role="states" Type="Self.state" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="countries">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="states">
+        <PropertyRef Name="cid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_cities_states">
+    <End Role="states" Type="Self.state" Multiplicity="1" />
+    <End Role="cities" Type="Self.city" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="states">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="cities">
+        <PropertyRef Name="sid" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="contacts" EntityType="Self.contact" />
+    <EntitySet Name="countries" EntityType="Self.country" />
+    <EntitySet Name="Emps" EntityType="Self.Emp" />
+    <EntitySet Name="states" EntityType="Self.state" />
+    <EntitySet Name="cities" EntityType="Self.city" />
+    <AssociationSet Name="FK_states_countries" Association="Self.FK_states_countries">
+      <End Role="countries" EntitySet="countries" />
+      <End Role="states" EntitySet="states" />
+    </AssociationSet>
+    <AssociationSet Name="FK_cities_states" Association="Self.FK_cities_states">
+      <End Role="states" EntitySet="states" />
+      <End Role="cities" EntitySet="cities" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

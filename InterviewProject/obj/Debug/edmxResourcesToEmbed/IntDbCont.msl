@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="InterviewProjectDBModelStoreContainer" CdmEntityContainer="InterviewProjectDBEntities">
+    <EntitySetMapping Name="contacts">
+      <EntityTypeMapping TypeName="InterviewProjectDBModel.contact">
+        <MappingFragment StoreEntitySet="contact">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="phone" ColumnName="phone" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="countries">
+      <EntityTypeMapping TypeName="InterviewProjectDBModel.country">
+        <MappingFragment StoreEntitySet="countries">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="country1" ColumnName="country" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Emps">
+      <EntityTypeMapping TypeName="InterviewProjectDBModel.Emp">
+        <MappingFragment StoreEntitySet="Emp">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="firstname" ColumnName="firstname" />
+          <ScalarProperty Name="lastname" ColumnName="lastname" />
+          <ScalarProperty Name="DOB" ColumnName="DOB" />
+          <ScalarProperty Name="contactid" ColumnName="contactid" />
+          <ScalarProperty Name="countryid" ColumnName="countryid" />
+          <ScalarProperty Name="stateid" ColumnName="stateid" />
+          <ScalarProperty Name="cityid" ColumnName="cityid" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="states">
+      <EntityTypeMapping TypeName="InterviewProjectDBModel.state">
+        <MappingFragment StoreEntitySet="states">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="cid" ColumnName="cid" />
+          <ScalarProperty Name="state1" ColumnName="state" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="cities">
+      <EntityTypeMapping TypeName="InterviewProjectDBModel.city">
+        <MappingFragment StoreEntitySet="cities">
+          <ScalarProperty Name="empid" ColumnName="empid" />
+          <ScalarProperty Name="sid" ColumnName="sid" />
+          <ScalarProperty Name="city1" ColumnName="city" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
