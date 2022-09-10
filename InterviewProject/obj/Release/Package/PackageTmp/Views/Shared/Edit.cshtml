@@ -1,0 +1,98 @@
+﻿@model InterviewProject.Controllers.MyEmp
+
+<a id="index" class="btn btn-link empLists">Back to List</a>
+<div class="" style="margin:auto;width:600px">
+
+    @using (Ajax.BeginForm("Edit", new { id = Model.id }, new AjaxOptions { OnSuccess = "suc", OnFailure = "fail(data)", AllowCache = true, HttpMethod = "post", OnComplete = "suc(data)"       , 
+    }))
+    {
+        @Html.AntiForgeryToken()
+
+        <hr />
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(Model => Model.firstname, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(Model => Model.firstname, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(Model => Model.firstname, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => Model.lastname, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => Model.lastname, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(Model => Model.lastname, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => Model.DOB, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => Model.DOB, new { @class = "form-control", @type = "datetime" })
+                    @Html.ValidationMessageFor(Model => Model.DOB, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => Model.email, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => Model.email, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(Model => Model.email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => Model.contact, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => Model.contact, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(Model => Model.contact, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => Model.country, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(Model => Model.country, new SelectList(ViewBag.countries, "id", "country"), "Select Country", new { @Class = "form-control" })
+                    @Html.ValidationMessageFor(Model => Model.country, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div id="states" class="states">
+                <div class="form-group">
+                    @Html.LabelFor(model => Model.state, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(Model => Model.state, new SelectList(ViewBag.states, "id", "state"), "Select State", new { @Class = "form-control" })
+                        @Html.ValidationMessageFor(Model => Model.state, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div id="cities" class="cities">
+                <div class="form-group">
+                    @Html.LabelFor(model => Model.city, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(Model => Model.city, new SelectList(ViewBag.cities, "id", "city"), "Select Country", new { @Class = "form-control" })
+                        @Html.ValidationMessageFor(Model => Model.city, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div id="states">
+
+            </div>
+            <div id="cities">
+
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-6">
+                    <input type="submit" value="Create" style="float:right" class="btn btn-primary submit" />
+                </div>
+            </div>
+        </div>
+    }
+    
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
