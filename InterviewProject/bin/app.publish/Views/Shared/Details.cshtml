@@ -1,0 +1,79 @@
+﻿@model InterviewProject.Controllers.MyEmp
+
+@{
+    ViewBag.Title = "Details";
+}
+
+
+<div class=" " style="margin:auto;width:500px" >
+    <hr />
+    <dl style="text-align-last:left" class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.firstname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.firstname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.lastname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.lastname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DOB)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DOB)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.contact)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.contact)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CountryValue)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CountryValue)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StateValue)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StateValue)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CityValue)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CityValue)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    <a id="index" class="empLists">Back to List</a>
+</p>

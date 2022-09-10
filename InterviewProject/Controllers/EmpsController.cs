@@ -13,6 +13,7 @@ using InterviewProject;
 
 namespace InterviewProject.Controllers
 {
+    [Route("{controller}")]
     public class EmpsController : Controller
     {
         private InterviewProjectDBEntities db = new InterviewProjectDBEntities();
@@ -20,7 +21,21 @@ namespace InterviewProject.Controllers
         // GET: Emps
         public ActionResult Index()
         {
-            return PartialView("Index",db.Emps.ToList());
+
+            return PartialView("Index", db.Emps.Select(x => new MyEmp
+            {
+                id = x.id,
+                city = x.cityid,
+                contact = db.contacts.Where(y => (int)y.empid == x.id).FirstOrDefault().phone,
+                email = db.contacts.Where(y => (int)y.empid == x.id).FirstOrDefault().email,
+                CountryValue = db.countries.Where(y => y.id == x.countryid).FirstOrDefault().country1,
+                StateValue = db.states.Where(y => y.id == x.stateid).FirstOrDefault().state1,
+                CityValue = db.cities.Where(y => y.id == x.cityid).FirstOrDefault().city1,
+                DOB = (DateTime)x.DOB,
+                firstname = x.firstname,
+                lastname = x.lastname,
+                state = x.stateid
+            }).ToList());
         }
 
         // GET: Emps/Details/5
@@ -30,15 +45,31 @@ namespace InterviewProject.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Emp emp = db.Emps.Find(id);
+            MyEmp emp = db.Emps.Where(x => x.id == id).Select(x => new MyEmp
+            {
+                id = x.id,
+                city = x.cityid,
+                contact = db.contacts.Where(y => (int)y.empid == x.id).FirstOrDefault().phone,
+                email = db.contacts.Where(y => (int)y.empid == x.id).FirstOrDefault().email,
+                CountryValue = db.countries.Where(y => y.id == x.countryid).FirstOrDefault().country1,
+                StateValue = db.states.Where(y => y.id == x.stateid).FirstOrDefault().state1,
+                CityValue = db.cities.Where(y => y.id == x.cityid).FirstOrDefault().city1,
+                DOB = (DateTime)x.DOB,
+                firstname = x.firstname,
+                lastname = x.lastname,
+                state = x.stateid
+            }).FirstOrDefault();
             if (emp == null)
             {
                 return HttpNotFound();
             }
-            return View(emp);
+            return PartialView("Details", emp);
         }
 
         // GET: Emps/Create
+        [Route("~/")]
+        [Route("")]
+        [Route("Lists")]
         public ActionResult Create()
         {
             ViewBag.countries = db.countries.Select(x => new countries { id = x.id, country = x.country1 }).ToList();
@@ -75,7 +106,8 @@ namespace InterviewProject.Controllers
                 var contact = db.contacts.Add(new contact { email = emp.email, phone = emp.contact, empid = storedEmp.id });
 
                 db.SaveChanges();
-                return PartialView("Index", db.Emps.ToList());
+
+                return RedirectToAction("Index");
             }
 
             return View(emp);
@@ -98,16 +130,34 @@ namespace InterviewProject.Controllers
         // GET: Emps/Edit/5
         public ActionResult Edit(int? id)
         {
+            ViewBag.countries = db.countries.Select(x => new countries { id = x.id, country = x.country1 }).ToList();
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Emp emp = db.Emps.Find(id);
+            MyEmp emp = db.Emps.Where(x=>x.id==id).Select(x => new MyEmp
+            {
+                id = x.id,
+                city = x.cityid,
+                contact = db.contacts.Where(y => (int)y.empid == x.id).FirstOrDefault().phone,
+                email = db.contacts.Where(y => (int)y.empid == x.id).FirstOrDefault().email,
+                country = x.countryid,
+                DOB = (DateTime)x.DOB,
+                firstname = x.firstname,
+                lastname = x.lastname,
+                state = x.stateid
+            }).FirstOrDefault();
+
             if (emp == null)
             {
                 return HttpNotFound();
             }
-            return View(emp);
+
+            ViewBag.states = db.states.Where(x => x.cid == emp.country).Select(x => new states { id = x.id, state = x.state1 }).ToList();
+            ViewBag.cities = db.cities.Where(x => x.sid == emp.state).Select(x => new cities { id = x.id, city = x.city1 }).ToList();
+
+            return PartialView("Edit", emp);
         }
 
         // POST: Emps/Edit/5
@@ -115,15 +165,37 @@ namespace InterviewProject.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,firstname,lastname,DOB,contactid,countryid,stateid,cityid")] Emp emp)
+        public ActionResult Edit(MyEmp emp)
         {
+            ViewBag.countries = db.countries.Select(x => new countries { id = x.id, country = x.country1 }).ToList();
             if (ModelState.IsValid)
             {
-                db.Entry(emp).State = EntityState.Modified;
+                var toUopdate = db.Emps.Find(emp.id);
+
+                if (toUopdate == null) return HttpNotFound();
+
+
+
+                toUopdate.firstname = emp.firstname;
+                toUopdate.lastname = emp.lastname;
+                toUopdate.DOB = emp.DOB;
+                toUopdate.stateid = emp.state;
+                toUopdate.cityid = emp.city;
+                toUopdate.contactid = 0;
+                toUopdate.countryid = emp.country;
+
+
+                db.SaveChanges();
+                var contacts = db.contacts.Where(c => c.empid == emp.id).FirstOrDefault();
+
+                contacts.empid = emp.id; contacts.email = emp.email; contacts.phone = emp.contact;
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(emp);
+            ViewBag.states = db.states.Where(x => x.cid == emp.country).Select(x => new states { id = x.id, state = x.state1 }).ToList();
+            ViewBag.cities = db.cities.Where(x => x.sid == emp.state).Select(x => new cities { id = x.id, city = x.city1 }).ToList();
+            return Json("1");
         }
 
         // GET: Emps/Delete/5
@@ -134,11 +206,16 @@ namespace InterviewProject.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Emp emp = db.Emps.Find(id);
+
             if (emp == null)
             {
                 return HttpNotFound();
             }
-            return View(emp);
+
+            db.Emps.Remove(emp);
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
         }
 
         // POST: Emps/Delete/5
@@ -180,7 +257,7 @@ namespace InterviewProject.Controllers
     }
     public class MyEmp
     {
-        public int id { get; set; }
+        public int? id { get; set; }
         public string firstname { get; set; }
         public string lastname { get; set; }
 
@@ -200,5 +277,10 @@ namespace InterviewProject.Controllers
         public int state { get; set; }
         [Required(ErrorMessage = "Select city")]
         public int city { get; set; }
+
+        public string CountryValue { get; set; }
+        public string StateValue { get; set; }
+        public string CityValue { get; set; }
+
     }
 }
